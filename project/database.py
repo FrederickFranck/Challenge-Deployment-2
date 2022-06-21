@@ -1,13 +1,18 @@
 import mariadb
-import sys
 import toml
 import pathlib
+import logging
+
 
 # Read local `config.toml` file.
 config = toml.load(pathlib.Path(__file__).parent / "dbcredentials.toml")
 
 
 def main():
+    return 
+
+
+def connect() -> mariadb.connection:
     try:
         conn = mariadb.connect(
             user=config["DB"]["username"],
@@ -16,26 +21,15 @@ def main():
             port=config["DB"]["port"],
             database=config["DB"]["dbname"],
         )
+        return conn
         
     except mariadb.Error as e:
-        print(f"Error connecting to MariaDB Platform: {e}")
-        sys.exit(1)
+        logging.error(f"{__name__:<15} connecting to MariaDB Platform: {e}")
+        return
 
-    # Get Cursor
-    cur = conn.cursor()
-    cur.execute("Show tables")
-
-    for r in cur:
-        print(r)
-
-
-def connect():
+def disconnect(_connection: mariadb.connection):
+    _connection.close()
     return
-
-
-def disconnect():
-    return
-
 
 def insert():
     return
