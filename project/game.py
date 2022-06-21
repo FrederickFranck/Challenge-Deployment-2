@@ -39,7 +39,7 @@ class Game:
         self.description = _description
         self.win_support = _win_support
         self.mac_support = _mac_support
-        self.linux_Sup = _linux_support
+        self.linux_support = _linux_support
         self.positive_reviews = _positive_reviews
         self.negative_reviews = _negative_reviews
         
@@ -52,3 +52,10 @@ class Game:
 
     def add_languages(self, language : Tuple[int, str]):
         self.genres.append(language)
+
+
+def main():
+    return
+
+if __name__ == '__main__':
+    main()

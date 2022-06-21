@@ -1,29 +1,40 @@
 import json
-from game import Game
+import pathlib
+import logging
 
+from .game import Game
 
 def main():
+    return
+
+database_file = (pathlib.Path(__file__).parent / "./data/database.json")
+
+def parse() -> list[Game]:
+    games = []
     data = 0
-    with open("./data/database.json") as file:
+    with open(database_file) as file:
         data = json.load(file)
 
     for item in data.items():
-        game = Game(
-            item["steam_appid"],
-            item["name"],
-            item["developers"][0],
-            item["price_overview"]["final"],
-            item["detailed_description"],
-            item["platforms"]["windows"],
-            item["platforms"]["mac"],
-            item["platforms"]["Linux"],
-            item["total_positive"],
-            item["total_negative"],
-        )
-
-
-def parse():
-    return
+        item = item[1]
+        try:
+            game = Game(
+                item["steam_appid"],
+                item["name"],
+                item["developers"][0],
+                item["price_overview"]["final"],
+                item["detailed_description"],
+                item["platforms"]["windows"],
+                item["platforms"]["mac"],
+                item["platforms"]["linux"],
+                item["total_positive"],
+                item["total_negative"],
+            )
+        except Exception as e:
+            logging.error(f"{__name__:<15} Parsing Game Json: {e}")
+        
+    games.append(game)
+    return games
 
 
 if __name__ == "__main__":
