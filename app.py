@@ -14,6 +14,8 @@ logging.basicConfig(
 def main():
     conn = project.database.connect()
     games = parse()
+    
+    print(len(games))
     for game in games:
         project.database.insert(game, conn)
 
