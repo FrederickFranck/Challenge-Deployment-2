@@ -1,6 +1,10 @@
+CREATE DATABASE `steamdb`;
+
+USE steamdb;
+
 CREATE TABLE `Categories`  (
   `ID` int NOT NULL,
-  `Description` varchar(255) NULL,
+  `Description` text NULL,
   PRIMARY KEY (`ID`)
 );
 
@@ -21,7 +25,7 @@ CREATE TABLE `Game-Genres`  (
 CREATE TABLE `Games`  (
   `ID` int NOT NULL,
   `Name` varchar(255) NULL,
-  `Description` varchar(255) NULL,
+  `Description` text NULL,
   `Price` decimal(10, 2) NULL,
   `Developer` varchar(255) NULL,
   `Win_Support` boolean,
