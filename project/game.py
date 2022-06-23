@@ -43,6 +43,10 @@ class Game:
         self.positive_reviews = _positive_reviews
         self.negative_reviews = _negative_reviews
         
+        self.genres = []
+        self.categories = []
+        self.languages = []
+        
 
     def add_genre(self, genre : Tuple[int, str]):
         self.genres.append(genre)
@@ -52,6 +56,9 @@ class Game:
 
     def add_languages(self, language : Tuple[int, str]):
         self.genres.append(language)
+        
+    def __repr__(self) -> str:
+        return f"{self.name} - {self.genres} - {self.categories} - {self.languages}"
 
 
 def main():
