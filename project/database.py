@@ -1,4 +1,5 @@
 from multiprocessing import connection
+from typing import Tuple
 import mariadb
 import toml
 import pathlib
@@ -36,7 +37,16 @@ def disconnect(_connection: mariadb.connection):
     return
 
 
-def insert(_game: Game, _connection: mariadb.connection) -> bool:
+def insert_games(_games: list[Game], _connection: mariadb.connection) -> None:
+    for game in _games:
+        insert_game(game, _connection)
+
+    return
+
+
+def insert_game(_game: Game, _connection: mariadb.connection) -> bool:
+
+    # Insert Game into Database
     SQL = (
         "INSERT INTO Games (ID, NAME, Description, Price, Developer, Win_Support, Mac_Support, Linux_Support, Pos_Review, Neg_Review )"
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
@@ -59,17 +69,97 @@ def insert(_game: Game, _connection: mariadb.connection) -> bool:
                 _game.negative_reviews,
             ),
         )
-        _connection.commit()
 
     except mariadb.IntegrityError:
         logging.debug(f"{__name__:<15} Inserting {_game.name} already inserted")
 
+    except Exception as e:
+        logging.error(f"{__name__:<15} Inserting {e}")
+
+    # Insert Game_Genre into Database
+    genres = _game.genres
+    for genre in genres:
+        SQL = "INSERT INTO `Game-Genres` (Game_ID, Genre_ID) VALUES (?, ?)"
+
+        try:
+            cursor.execute(SQL, (_game.id, genre[0]))
+
+        except Exception as e:
+            logging.error(
+                f"{__name__:<15} Inserting game {_game.name} - genre {genre[1]}  {e}"
+            )
+
+    # Insert Game_Category into Database
+    categories = _game.categories
+    for category in categories:
+        SQL = "INSERT INTO `Game-Categories` (Game_ID, Category_ID) VALUES (?, ?)"
+
+        try:
+            cursor.execute(SQL, (_game.id, category[0]))
+
+        except Exception as e:
+            logging.error(
+                f"{__name__:<15} Inserting game {_game.name} - category {category[1]}  {e}"
+            )
+
+    _connection.commit()
+
     return
 
 
-def query():
-    return
+def insert_genres(
+    _genres: list[Tuple[int, str]], _connection: mariadb.connection
+) -> None:
+    cursor = _connection.cursor()
+
+    # Insert Genres into Database
+    SQL = "INSERT INTO Genres (ID, Description) VALUES (?, ?)"
+
+    for genre in _genres:
+        try:
+            cursor.execute(SQL, (genre[0], genre[1]))
+            _connection.commit()
+
+        except mariadb.IntegrityError:
+            logging.debug(f"{__name__:<15} Inserting genres{genre[1]} already inserted")
+
+        except Exception as e:
+            logging.error(f"{__name__:<15} Inserting genre {genre[1]} {e}")
+
+
+def insert_categories(
+    _categories: list[Tuple[int, str]], _connection: mariadb.connection
+) -> None:
+    cursor = _connection.cursor()
+
+    # Insert Categories into Database
+    SQL = "INSERT INTO Categories (ID, Description) VALUES (?, ?)"
+
+    for category in _categories:
+        try:
+            cursor.execute(SQL, (category[0], category[1]))
+
+        except mariadb.IntegrityError:
+            logging.debug(
+                f"{__name__:<15} Inserting categories {category[1]} already inserted"
+            )
+
+        except Exception as e:
+            logging.error(f"{__name__:<15} Inserting categories{category[1]} {e}")
+
+
+
+def get_games(_connection: mariadb.connection) -> list[Game]:
+    cursor = _connection.cursor()
+    SQL = "SELECT * FROM Games"
+    cursor.execute(SQL)
+    results = []
+    for result in cursor:
+        results.append(result)
+        
+    return results
 
 
 if __name__ == "__main__":
     main()
+
