@@ -49,9 +49,9 @@ def parse() -> list[Game]:
             game = Game(
                 item["steam_appid"],
                 item["name"],
-                _developer,
-                _price,
                 item["detailed_description"],
+                _price,
+                _developer,
                 item["platforms"]["windows"],
                 item["platforms"]["mac"],
                 item["platforms"]["linux"],

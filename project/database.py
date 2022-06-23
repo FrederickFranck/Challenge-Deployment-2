@@ -148,18 +148,48 @@ def insert_categories(
             logging.error(f"{__name__:<15} Inserting categories{category[1]} {e}")
 
 
-
 def get_games(_connection: mariadb.connection) -> list[Game]:
     cursor = _connection.cursor()
-    SQL = "SELECT * FROM Games"
+    SQL = "SELECT ID, Name FROM Games"
     cursor.execute(SQL)
     results = []
+    temp = []
     for result in cursor:
         results.append(result)
-        
+
+
+    for result in results:
+        temp.append({result[1]: result[0]})
+
+    results = temp
+    
     return results
+
+
+def get_game_by_id(_id: int, _connection: mariadb.connection) -> Game:
+    cursor = _connection.cursor()
+    SQL = "SELECT * FROM Games WHERE ID = ?"
+    cursor.execute(SQL, (_id,))
+
+    game_data = []
+    for result in cursor:
+        game_data.append(result)
+
+    game = Game(
+        game_data[0][0],
+        game_data[0][1],
+        game_data[0][2],
+        game_data[0][3],
+        game_data[0][4],
+        game_data[0][5],
+        game_data[0][6],
+        game_data[0][7],
+        game_data[0][8],
+        game_data[0][9],
+    )
+
+    return game
 
 
 if __name__ == "__main__":
     main()
-

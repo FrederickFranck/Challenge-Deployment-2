@@ -1,35 +1,28 @@
-import logging
-import pathlib
-import project.database
-from project.parser import extract_categories, extract_genres, parse
+import streamlit as st
+import pandas as pd
+import project.database as db
 
-logging.basicConfig(
-    format="%(asctime)s:%(levelname)s:%(message)s",
-    datefmt="%d/%m/%Y %H:%M:%S ",
-    filename=pathlib.Path(__file__).parent / "logs/app.log",
-    level=logging.DEBUG,
+st.set_page_config(layout="wide")
+
+_connection = db.connect()
+
+games = db.get_games(_connection)
+# Create a list of names of games
+names = [list(game.keys())[0] for game in games]
+
+
+def select_game():
+    for game in games:
+        if game_name in game:
+            _game = db.get_game_by_id(game[game_name], _connection)
+
+            return st.write(_game)
+
+    return
+
+
+st.write(
+    """Hello There ! This is a Streamlit App that will help you to find the best games for you. """
 )
 
-
-def main():
-    # Parse the json to extract all games
-    games = parse()
-
-    # Connect to Database
-    conn = project.database.connect()
-
-    # Extract genres from all the games & insert them into the database
-    project.database.insert_genres(extract_genres(games), conn)
-
-    # Extract categories from all the games & insert them into the database
-    project.database.insert_categories(extract_categories(games), conn)
-
-    # Insert all the games & their relation to categories and genres into the database
-    project.database.insert_games(games, conn)
-
-    # Close the connection to the database
-    project.database.disconnect(conn)
-
-
-if __name__ == "__main__":
-    main()
+game_name = st.selectbox("Game ? ", names, on_change=select_game)
