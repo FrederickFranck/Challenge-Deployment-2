@@ -9,14 +9,14 @@ CREATE TABLE `Categories`  (
 );
 
 CREATE TABLE `Game-Categories`  (
-  `ID` int NOT NULL,
+  `ID` int NOT NULL AUTO_INCREMENT,
   `Game_ID` int NULL,
   `Category_ID` int NULL,
   PRIMARY KEY (`ID`)
 );
 
 CREATE TABLE `Game-Genres`  (
-  `ID` int NOT NULL,
+  `ID` int NOT NULL AUTO_INCREMENT,
   `Game_ID` int NULL,
   `Genre_ID` int NULL,
   PRIMARY KEY (`ID`)
@@ -49,7 +49,7 @@ CREATE TABLE `Languages`  (
 );
 
 CREATE TABLE `Supported-Languages`  (
-  `ID` int NOT NULL,
+  `ID` int NOT NULL AUTO_INCREMENT,
   `Game_ID` int NULL,
   `Language_ID` int NULL,
   PRIMARY KEY (`ID`)
