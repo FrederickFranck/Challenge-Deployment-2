@@ -148,7 +148,7 @@ def insert_categories(
             logging.error(f"{__name__:<15} Inserting categories{category[1]} {e}")
 
 
-def get_games(_connection: mariadb.connection) -> list[Game]:
+def get_games(_connection: mariadb.connection) -> list[dict[int, str]]:
     cursor = _connection.cursor()
     SQL = "SELECT ID, Name FROM Games"
     cursor.execute(SQL)
@@ -189,6 +189,92 @@ def get_game_by_id(_id: int, _connection: mariadb.connection) -> Game:
     )
 
     return game
+
+def get_genres(_connection: mariadb.connection) -> list[dict[int, str]]:
+    cursor = _connection.cursor()
+    SQL = "SELECT ID, Description FROM Genres"
+    cursor.execute(SQL)
+    results = []
+    temp = []
+    
+    for result in cursor:
+        results.append(result)
+
+    for result in results:
+        temp.append({result[1]: result[0]})
+
+    results = temp
+    return results
+
+
+def get_genre_games(_genre_id: int, _connection: mariadb.connection) -> list[dict[int, str]]:
+    cursor = _connection.cursor()
+    SQL = "SELECT ID, Name FROM Games WHERE ID IN (SELECT Game_ID FROM `Game-Genres` WHERE Genre_ID = ?)"
+    cursor.execute(SQL, (_genre_id,))
+    results = []
+    temp = []
+    for result in cursor:
+        results.append(result)
+
+    for result in results:
+        temp.append({result[1]: result[0]})
+
+    results = temp
+    return results
+
+
+def get_category_games(_category_id: int, _connection: mariadb.connection) -> list[dict[int, str]]:
+    cursor = _connection.cursor()
+    SQL = "SELECT ID, Name FROM Games WHERE ID IN (SELECT Game_ID FROM `Game-Categories` WHERE Category_ID = ?)"
+    cursor.execute(SQL, (_category_id,))
+    results = []
+    temp = []
+    for result in cursor:
+        results.append(result)
+
+    for result in results:
+        temp.append({result[1]: result[0]})
+
+    results = temp
+    return results
+
+
+def get_game_ratings(_game_id: int, _connection: mariadb.connection) -> list[Tuple[int, int]]:
+    cursor = _connection.cursor()
+    SQL = "SELECT Pos_Review, Neg_Review FROM Games WHERE ID = ?"
+    cursor.execute(SQL, (_game_id,))
+    results = []
+
+    for result in cursor:
+        results.append(result)
+
+    return results
+
+
+def get_game_supported_platforms(_game_id: int, _connection: mariadb.connection) -> list[Tuple[bool, bool, bool]]:
+    cursor = _connection.cursor()
+    SQL = "SELECT Win_Support, Mac_Support, Linux_Support FROM Games WHERE ID = ?"
+    cursor.execute(SQL, (_game_id,))
+    results = []
+    for result in cursor:
+        results.append(result)
+    return results
+
+def get_categories(_connection: mariadb.connection) -> list[dict[int, str]]:
+    cursor = _connection.cursor()
+    SQL = "SELECT ID, Description FROM Categories"
+    cursor.execute(SQL)
+    results = []
+    temp = []
+    
+    for result in cursor:
+        results.append(result)
+
+    for result in results:
+        temp.append({result[1]: result[0]})
+
+    results = temp
+    return results
 
 
 if __name__ == "__main__":
