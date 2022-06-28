@@ -5,7 +5,7 @@ import toml
 import pathlib
 import logging
 
-from project.game import Game
+from game import Game
 
 
 # Read local `config.toml` file.

@@ -1,5 +1,5 @@
 import streamlit as st
-import project.database as db
+import database as db
 import pandas as pd
 
 
@@ -145,7 +145,6 @@ with game_select_col:
         st.write("Too many games to display, please select a genre or category")
 with game_info_col:
     if selected_game != None:
-        print(selected_game)
         game_id = [
             list(game.values())[0]
             for game in games
