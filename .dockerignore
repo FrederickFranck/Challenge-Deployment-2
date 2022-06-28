@@ -1,0 +1,10 @@
+/steamdb
+
+/database
+/Helper
+/logs
+/project/__pycache__
+/project/main.py
+
+README.md
+.gitignore
