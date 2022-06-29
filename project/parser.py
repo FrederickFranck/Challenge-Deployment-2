@@ -6,7 +6,7 @@ import sys
 from typing import Tuple
 from unicodedata import category
 
-from .game import Game
+from game import Game
 
 
 def main():

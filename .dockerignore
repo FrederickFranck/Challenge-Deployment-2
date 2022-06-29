@@ -5,6 +5,8 @@
 /logs
 /project/__pycache__
 /project/main.py
+/project/parser.py
+/project/data
 
 README.md
 .gitignore
