@@ -16,7 +16,7 @@ def main():
     return
 
 
-def connect() -> mariadb.connection:
+def connect():
     try:
         conn = mariadb.connect(
             user=config["DB"]["username"],
@@ -32,19 +32,19 @@ def connect() -> mariadb.connection:
         return
 
 
-def disconnect(_connection: mariadb.connection):
+def disconnect(_connection):
     _connection.close()
     return
 
 
-def insert_games(_games: list[Game], _connection: mariadb.connection) -> None:
+def insert_games(_games: list[Game], _connection) -> None:
     for game in _games:
         insert_game(game, _connection)
 
     return
 
 
-def insert_game(_game: Game, _connection: mariadb.connection) -> bool:
+def insert_game(_game: Game, _connection) -> bool:
 
     # Insert Game into Database
     SQL = (
@@ -108,7 +108,7 @@ def insert_game(_game: Game, _connection: mariadb.connection) -> bool:
 
 
 def insert_genres(
-    _genres: list[Tuple[int, str]], _connection: mariadb.connection
+    _genres: list[Tuple[int, str]], _connection
 ) -> None:
     cursor = _connection.cursor()
 
@@ -128,7 +128,7 @@ def insert_genres(
 
 
 def insert_categories(
-    _categories: list[Tuple[int, str]], _connection: mariadb.connection
+    _categories: list[Tuple[int, str]], _connection
 ) -> None:
     cursor = _connection.cursor()
 
@@ -148,7 +148,7 @@ def insert_categories(
             logging.error(f"{__name__:<15} Inserting categories{category[1]} {e}")
 
 
-def get_games(_connection: mariadb.connection) -> list[dict[int, str]]:
+def get_games(_connection) -> list[dict[int, str]]:
     cursor = _connection.cursor()
     SQL = "SELECT ID, Name FROM Games"
     cursor.execute(SQL)
@@ -165,7 +165,7 @@ def get_games(_connection: mariadb.connection) -> list[dict[int, str]]:
     return results
 
 
-def get_game_by_id(_id: int, _connection: mariadb.connection) -> Game:
+def get_game_by_id(_id: int, _connection) -> Game:
     cursor = _connection.cursor()
     SQL = "SELECT * FROM Games WHERE ID = ?"
     cursor.execute(SQL, (_id,))
@@ -190,7 +190,7 @@ def get_game_by_id(_id: int, _connection: mariadb.connection) -> Game:
     return game
 
 
-def get_genres(_connection: mariadb.connection) -> list[dict[int, str]]:
+def get_genres(_connection) -> list[dict[int, str]]:
     cursor = _connection.cursor()
     SQL = "SELECT ID, Description FROM Genres"
     cursor.execute(SQL)
@@ -208,7 +208,7 @@ def get_genres(_connection: mariadb.connection) -> list[dict[int, str]]:
 
 
 def get_genre_games(
-    _genre_id: int, _connection: mariadb.connection
+    _genre_id: int, _connection
 ) -> list[dict[int, str]]:
     cursor = _connection.cursor()
     SQL = "SELECT ID, Name FROM Games WHERE ID IN (SELECT Game_ID FROM `Game-Genres` WHERE Genre_ID = ?)"
@@ -226,7 +226,7 @@ def get_genre_games(
 
 
 def get_category_games(
-    _category_id: int, _connection: mariadb.connection
+    _category_id: int, _connection
 ) -> list[dict[int, str]]:
     cursor = _connection.cursor()
     SQL = "SELECT ID, Name FROM Games WHERE ID IN (SELECT Game_ID FROM `Game-Categories` WHERE Category_ID = ?)"
@@ -244,7 +244,7 @@ def get_category_games(
 
 
 def get_game_ratings(
-    _game_id: int, _connection: mariadb.connection
+    _game_id: int, _connection
 ) -> list[Tuple[int, int]]:
     cursor = _connection.cursor()
     SQL = "SELECT Pos_Review, Neg_Review FROM Games WHERE ID = ?"
@@ -258,7 +258,7 @@ def get_game_ratings(
 
 
 def get_supported_platforms(
-    _game_id: int, _connection: mariadb.connection
+    _game_id: int, _connection
 ) -> list[Tuple[bool, bool, bool]]:
     cursor = _connection.cursor()
     SQL = "SELECT Win_Support, Mac_Support, Linux_Support FROM Games WHERE ID = ?"
@@ -269,7 +269,7 @@ def get_supported_platforms(
     return results
 
 
-def get_categories(_connection: mariadb.connection) -> list[dict[int, str]]:
+def get_categories(_connection) -> list[dict[int, str]]:
     cursor = _connection.cursor()
     SQL = "SELECT ID, Description FROM Categories"
     cursor.execute(SQL)
@@ -286,7 +286,7 @@ def get_categories(_connection: mariadb.connection) -> list[dict[int, str]]:
     return results
 
 
-def get_categories_count(_connection: mariadb.connection) -> list[str, int]:
+def get_categories_count(_connection) -> list[str, int]:
     cursor = _connection.cursor()
     SQL = "SELECT (SELECT Description FROM Categories WHERE ID = Category_ID), COUNT(Game_ID) FROM `Game-Categories` GROUP BY Category_ID"
     cursor.execute(SQL)
@@ -297,7 +297,7 @@ def get_categories_count(_connection: mariadb.connection) -> list[str, int]:
     return results
 
 
-def get_genres_count(_connection: mariadb.connection) -> list[str, int]:
+def get_genres_count(_connection) -> list[str, int]:
     cursor = _connection.cursor()
     SQL = "SELECT (SELECT Description FROM Genres WHERE ID = Genre_ID), COUNT(Game_ID) FROM `Game-Genres` GROUP BY Genre_ID"
     cursor.execute(SQL)
@@ -309,7 +309,7 @@ def get_genres_count(_connection: mariadb.connection) -> list[str, int]:
 
 
 def get_games_by_genre(
-    _genre_id: int, _connection: mariadb.connection
+    _genre_id: int, _connection
 ) -> list[dict[int, str]]:
     cursor = _connection.cursor()
     SQL = "SELECT ID, Name FROM Games WHERE ID IN (SELECT Game_ID FROM `Game-Genres` WHERE Genre_ID = ?)"
@@ -327,7 +327,7 @@ def get_games_by_genre(
 
 
 def get_games_by_category(
-    _category_id: int, _connection: mariadb.connection
+    _category_id: int, _connection
 ) -> list[dict[int, str]]:
     cursor = _connection.cursor()
     SQL = "SELECT ID, Name FROM Games WHERE ID IN (SELECT Game_ID FROM `Game-Categories` WHERE Category_ID = ?)"
@@ -345,7 +345,7 @@ def get_games_by_category(
 
 
 def get_game_categories(
-    _game_id: int, _connection: mariadb.connection
+    _game_id: int, _connection
 ) -> list[dict[int, str]]:
     cursor = _connection.cursor()
     SQL = "SELECT Description FROM Categories WHERE ID IN (SELECT Category_ID FROM `Game-Categories` WHERE Game_ID = ?)"
@@ -359,7 +359,7 @@ def get_game_categories(
 
 
 def get_game_genres(
-    _game_id: int, _connection: mariadb.connection
+    _game_id: int, _connection
 ) -> list[dict[int, str]]:
     cursor = _connection.cursor()
     SQL = "SELECT Description FROM Genres WHERE ID IN (SELECT Genre_ID FROM `Game-Genres` WHERE Game_ID = ?)"
