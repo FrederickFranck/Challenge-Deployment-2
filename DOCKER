@@ -11,4 +11,3 @@ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ste
 
 
 docker run -p 3306:3306 --detach --name some-mariadb --env MARIADB_USER=example-user --env MARIADB_PASSWORD=my_cool_secret --env MARIADB_ROOT_PASSWORD=my-secret-pw  mariadb 
-docker run -p 3306:3306 --detach --name steamdb --env MARIADB_USER=frederick --env MARIADB_PASSWORD=becode123 --env MARIADB_ROOT_PASSWORD=wortelwortelwortel  mariadb 
